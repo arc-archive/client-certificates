@@ -1,0 +1,380 @@
+import { fixture, assert, html, nextFrame, aTimeout } from '@open-wc/testing';
+import * as sinon from 'sinon/pkg/sinon-esm.js';
+import * as MockInteractions from '@polymer/iron-test-helpers/mock-interactions.js';
+import { DataGenerator } from '@advanced-rest-client/arc-data-generator/arc-data-generator.js';
+import '@advanced-rest-client/arc-models/client-certificate-model.js';
+import '../client-certificates-panel.js';
+import { ArcModelEvents, ArcModelEventTypes } from '@advanced-rest-client/arc-models';
+import { DataExportEventTypes, ImportEvents } from '@advanced-rest-client/arc-events';
+import { doExportItems } from '../src/ClientCertificatesPanelElement.js';
+
+/** @typedef {import('../index').ClientCertificatesPanelElement} ClientCertificatesPanelElement */
+/** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.ARCClientCertificate} ARCClientCertificate */
+/** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.Certificate} Certificate */
+
+describe('ClientCertificatesPanelElement', () => {
+  /**
+   * @returns {Promise<ClientCertificatesPanelElement>}
+   */
+  async function basicFixture() {
+    return fixture(html`<client-certificates-panel></client-certificates-panel>`);
+  }
+
+  /**
+   * @returns {Promise<ClientCertificatesPanelElement>}
+   */
+  async function queryDataFixture() {
+    const elmRequest = fixture(html`<div>
+      <client-certificate-model></client-certificate-model>
+      <client-certificates-panel></client-certificates-panel>
+    </div>`);
+    return new Promise((resolve) => {
+      window.addEventListener(ArcModelEventTypes.ClientCertificate.list, function f(e) {
+        window.removeEventListener(ArcModelEventTypes.ClientCertificate.list, f);
+        // @ts-ignore
+        const { detail } = e;
+        setTimeout(() => {
+          detail.result
+          .then(() => elmRequest)
+          .then((node) => {
+            resolve(node.querySelector('client-certificates-panel'));
+          });
+        });
+      });
+    });
+  }
+
+  async function untilAfterQuery(element, result) {
+    return new Promise((resolve) => {
+      element.addEventListener(ArcModelEventTypes.ClientCertificate.list, function f(e) {
+        element.removeEventListener(ArcModelEventTypes.ClientCertificate.list, f);
+        e.preventDefault();
+        e.detail.result = Promise.resolve(result || []);
+        setTimeout(() => resolve());
+      });
+      element.reset();
+    });
+  }
+
+  describe('Empty state', () => {
+    it('render empty state', async () => {
+      const element = await basicFixture();
+      await untilAfterQuery(element);
+      const node = element.shadowRoot.querySelector('.empty-screen');
+      assert.ok(node);
+    });
+
+    it('queries for certificates when initialized', async () => {
+      const spy = sinon.spy();
+      window.addEventListener(ArcModelEventTypes.ClientCertificate.list, spy);
+      await basicFixture();
+      assert.isTrue(spy.called);
+    });
+
+    it('import button renders import element', async () => {
+      const element = await basicFixture();
+      await untilAfterQuery(element);
+      const button = element.shadowRoot.querySelector('[data-action="empty-add-cert"]');
+      MockInteractions.tap(button);
+      await nextFrame();
+      const node = element.shadowRoot.querySelector('certificate-import');
+      assert.ok(node);
+    });
+  });
+
+  describe('Data list', () => {
+    before(async () => {
+      await DataGenerator.insertCertificatesData({});
+    });
+
+    after(async () => {
+      await DataGenerator.destroyClientCertificates();
+    });
+
+    let element = /** @type ClientCertificatesPanelElement */ (null);
+    beforeEach(async () => {
+      element = await queryDataFixture();
+    });
+
+    it('has items set', () => {
+      assert.lengthOf(element.items, 15);
+    });
+
+    it('renders list items', () => {
+      const nodes = element.shadowRoot.querySelectorAll('.list-item');
+      assert.lengthOf(nodes, 15);
+    });
+
+    it('does not render empty state', async () => {
+      const node = element.shadowRoot.querySelector('.empty-screen');
+      assert.notOk(node);
+    });
+  });
+
+  describe('datastore-destroyed event handler', () => {
+    let element = /** @type ClientCertificatesPanelElement */ (null);
+    beforeEach(async () => {
+      element = await basicFixture();
+      // @ts-ignore
+      element.items = DataGenerator.generateClientCertificates({ size: 5 });
+    });
+
+    it('resets items', () => {
+      ArcModelEvents.destroyed(document.body, 'client-certificates');
+      assert.isUndefined(element.items);
+    });
+
+    it('ignores other data stores', () => {
+      ArcModelEvents.destroyed(document.body, 'saved-requests');
+      assert.lengthOf(element.items, 5);
+    });
+  });
+
+  describe('data-imported event handler', () => {
+    let element = /** @type ClientCertificatesPanelElement */ (null);
+    beforeEach(async () => {
+      element = await basicFixture();
+    });
+
+    it('calls reset()', () => {
+      const spy = sinon.spy(element, 'reset');
+      ImportEvents.dataImported(document.body);
+      assert.isTrue(spy.called);
+    });
+  });
+
+  describe(`${ArcModelEventTypes.ClientCertificate.State.delete} event handler`, () => {
+    let element = /** @type ClientCertificatesPanelElement */ (null);
+    before(async () => {
+      await DataGenerator.insertCertificatesData({
+        size: 5,
+      });
+    });
+
+    after(async () => {
+      await DataGenerator.destroyClientCertificates();
+    });
+
+    beforeEach(async () => {
+      element = await queryDataFixture();
+    });
+
+    it('removes existing item', () => {
+      const item = element.items[0];
+      ArcModelEvents.ClientCertificate.State.delete(document.body, item._id, item._rev);
+      assert.lengthOf(element.items, 4);
+    });
+
+    it('ignores when not on the list', () => {
+      ArcModelEvents.ClientCertificate.State.delete(document.body, 'some-id', 'some-rev');
+      assert.lengthOf(element.items, 5);
+    });
+  });
+
+  describe(`${ArcModelEventTypes.ClientCertificate.State.update} event handler`, () => {
+    let element = /** @type ClientCertificatesPanelElement */ (null);
+    before(async () => {
+      await DataGenerator.insertCertificatesData({
+        size: 5,
+      });
+    });
+
+    after(async () => {
+      await DataGenerator.destroyClientCertificates();
+    });
+
+    beforeEach(async () => {
+      element = await queryDataFixture();
+    });
+
+    it('updates existing item', () => {
+      let item = element.items[0];
+      item = { ...item};
+      item.name = 'test';
+      const record = {
+        item,
+        id: item._id,
+        rev: 'test',
+      };
+      // @ts-ignore
+      ArcModelEvents.ClientCertificate.State.update(document.body, record);
+      assert.equal(element.items[0].name, 'test');
+    });
+
+    it('Adds new item to the list', () => {
+      const item = DataGenerator.generateClientCertificate();
+      // @ts-ignore
+      item._id = '6_';
+      const record = {
+        item,
+        // @ts-ignore
+        id: item._id,
+        rev: 'test',
+      };
+      // @ts-ignore
+      ArcModelEvents.ClientCertificate.State.update(document.body, record);
+      assert.lengthOf(element.items, 6);
+    });
+  });
+
+  describe('Details rendering', () => {
+    before(async () => {
+      await DataGenerator.insertCertificatesData({});
+    });
+
+    after(async () => {
+      await DataGenerator.destroyClientCertificates();
+    });
+
+    let element = /** @type ClientCertificatesPanelElement */ (null);
+    beforeEach(async () => {
+      element = await queryDataFixture();
+    });
+
+    it('opens detail dialog when detail button is clicked', () => {
+      const node = element.shadowRoot.querySelector('.list-item anypoint-button');
+      MockInteractions.tap(node);
+
+      assert.equal(element.openedDetailsId, element.items[0]._id, 'openedDetailsId is set');
+      assert.isTrue(element.certDetailsOpened);
+    });
+
+    it('sets certId on details panel', async () => {
+      const button = element.shadowRoot.querySelector('.list-item anypoint-button');
+      MockInteractions.tap(button);
+      await nextFrame();
+      const node = element.shadowRoot.querySelector('certificate-details');
+      assert.equal(node.certId, element.items[0]._id);
+    });
+  });
+
+  describe('Export certificates flow', () => {
+    before(async () => {
+      await DataGenerator.insertCertificatesData({});
+    });
+
+    after(async () => {
+      await DataGenerator.destroyClientCertificates();
+    });
+
+    let element = /** @type ClientCertificatesPanelElement */ (null);
+    beforeEach(async () => {
+      element = await queryDataFixture();
+    });
+
+    it('opens export options when menu item is clicked', () => {
+      const button = element.shadowRoot.querySelector('[data-action="export-all"]');
+      MockInteractions.tap(button);
+      assert.isTrue(element.exportOptionsOpened, 'sets _exportOptionsOpened');
+    });
+
+    it('cancels the export ', async () => {
+      const button = element.shadowRoot.querySelector('[data-action="export-all"]');
+      MockInteractions.tap(button);
+      await nextFrame();
+      const node = element.shadowRoot.querySelector('export-options');
+      node.dispatchEvent(new CustomEvent('cancel'));
+      assert.isFalse(element.exportOptionsOpened);
+    });
+
+    it('accepts export and dispatches event ', async () => {
+      const button = element.shadowRoot.querySelector('[data-action="export-all"]');
+      MockInteractions.tap(button);
+      await nextFrame();
+      const spy = sinon.spy();
+      element.addEventListener(DataExportEventTypes.nativeData, spy);
+      const node = element.shadowRoot.querySelector('export-options');
+      node.dispatchEvent(new CustomEvent('accept', {
+        detail: {
+          exportOptions: {},
+          providerOptions: {}
+        }
+      }));
+      assert.isTrue(spy.called);
+    });
+  });
+
+  describe('[doExportItems]()', () => {
+    let element = /** @type ClientCertificatesPanelElement */ (null);
+    beforeEach(async () => {
+      element = await basicFixture();
+      const items = DataGenerator.generateClientCertificates({ size: 5 });
+      await untilAfterQuery(element, items);
+    });
+
+    it('dispatches the export event', (done) => {
+      window.addEventListener(DataExportEventTypes.nativeData, function f() {
+        window.removeEventListener(DataExportEventTypes.nativeData, f);
+        done();
+      });
+      element[doExportItems]({ provider: 'file' }, { file: 'test.json' });
+    });
+
+    it('renders error message when no export adapter', async () => {
+      await element[doExportItems]({ provider: 'file' }, { file: 'test.json' });
+      await nextFrame();
+      const node = element.shadowRoot.querySelector('.error-message');
+      assert.ok(node);
+    });
+  });
+
+  describe('All data delete', () => {
+    before(async () => {
+      await DataGenerator.insertCertificatesData({});
+    });
+
+    after(async () => {
+      await DataGenerator.destroyClientCertificates();
+    });
+
+    let element = /** @type ClientCertificatesPanelElement */ (null);
+    beforeEach(async () => {
+      element = await queryDataFixture();
+    });
+
+    it('opens delete confirmation dialog', () => {
+      const node = element.shadowRoot.querySelector('[data-action="delete-all"]');
+      MockInteractions.tap(node);
+      const dialog = element.shadowRoot.querySelector('#dataClearDialog');
+      // @ts-ignore
+      assert.isTrue(dialog.opened);
+    });
+
+    it('requests file export', async () => {
+      const spy = sinon.spy();
+      element.addEventListener(DataExportEventTypes.nativeData, spy);
+      const node = element.shadowRoot.querySelector('[data-action="delete-export-all"]');
+      MockInteractions.tap(node);
+      assert.isTrue(spy.calledOnce);
+    });
+
+    it('does not delete data when dialog is cancelled', async () => {
+      const dialog = element.shadowRoot.querySelector('#dataClearDialog');
+      // @ts-ignore
+      dialog.opened = true;
+      await nextFrame();
+      const spy = sinon.spy();
+      element.addEventListener(ArcModelEventTypes.destroy, spy);
+      MockInteractions.click(element);
+      await aTimeout(100);
+      // @ts-ignore
+      assert.isFalse(dialog.opened);
+      assert.isFalse(spy.called);
+    });
+
+    it('clears the data store when accepted', async () => {
+      const spy = sinon.spy();
+      element.addEventListener(ArcModelEventTypes.destroy, spy);
+      const dialog = element.shadowRoot.querySelector('#dataClearDialog');
+      // @ts-ignore
+      dialog.opened = true;
+      await nextFrame();
+      const node = element.shadowRoot.querySelector('[data-dialog-confirm]');
+      MockInteractions.tap(node);
+      await aTimeout(150);
+      // @ts-ignore
+      assert.isFalse(dialog.opened, 'dialog is not opened');
+      assert.isTrue(spy.called, 'delete event is dispatched');
+    });
+  });
+});

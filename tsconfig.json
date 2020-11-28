@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": ["es2017", "dom"],
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "esModuleInterop": true,
+    "plugins": [
+      {
+        "name": "typescript-lit-html-plugin"
+      }
+    ]
+  },
+  "include": [
+    "**/*.js",
+    "node_modules/@open-wc/**/*.js", "src/RequestMetaDetailsElement.d.ts", "src/RequestMetaEditorElement.d.ts", "index.d.ts", "arc-request-editor.d.ts", "arc-request-config.d.ts", "src/ClientCertificatesConsumerMixin.d.ts", "src/CertificateDetailsElement.d.ts", "certificate-details.d.ts", "client-certificates-panel.d.ts", "certificate-import.d.ts", "src/CertificateImportElement.d.ts", "src/ClientCertificatesPanelElement.d.ts"
+  ],
+  "exclude": [
+    "node_modules/!(@open-wc)"
+  ]
+}
