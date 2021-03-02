@@ -28,7 +28,7 @@ Default storage interface is provided with `@advanced-rest-client/arc-models/cli
 <html>
   <head>
     <script type="module">
-      import '@advanced-rest-client/cc-authorization-method/cc-authorization-method.js';
+      import '@advanced-rest-client/authorization-method/cc-authorization-method.js';
       import '@advanced-rest-client/arc-models/client-certificate-model.js';
     </script>
   </head>
@@ -45,7 +45,7 @@ Default storage interface is provided with `@advanced-rest-client/arc-models/cli
 
 ```js
 import { LitElement, html } from 'lit-element';
-import '@advanced-rest-client/cc-authorization-method/cc-authorization-method.js';
+import '@advanced-rest-client/authorization-method/cc-authorization-method.js';
 
 class SampleElement extends LitElement {
   render() {
@@ -79,8 +79,8 @@ It requires `client-certificate-model` element to be present in the DOM.
 ## Development
 
 ```sh
-git clone https://github.com/advanced-rest-client/cc-authorization-method
-cd cc-authorization-method
+git clone https://github.com/advanced-rest-client/authorization-method
+cd authorization-method
 npm install
 ```
 
@@ -95,7 +95,3 @@ npm start
 ```sh
 npm test
 ```
-
-### API components
-
-This components is a part of [API components ecosystem](https://elements.advancedrestclient.com/)
