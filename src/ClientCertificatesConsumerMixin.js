@@ -1,8 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { LitElement } from 'lit-element';
 import { dedupeMixin } from '@open-wc/dedupe-mixin';
-import { ArcModelEventTypes, ArcModelEvents } from '@advanced-rest-client/arc-models';
-import { DataImportEventTypes, TelemetryEvents } from '@advanced-rest-client/arc-events';
+import { DataImportEventTypes, TelemetryEvents, ArcModelEventTypes, ArcModelEvents } from '@advanced-rest-client/arc-events';
 
 export const dbDestroyHandler = Symbol('dbDestroyHandler');
 export const dataImportHandler = Symbol('dataImportHandler');
@@ -11,9 +10,9 @@ export const certInsertHandler = Symbol('certInsertHandler');
 export const handleException = Symbol('handleException');
 
 /** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.ARCCertificateIndex} ARCCertificateIndex */
-/** @typedef {import('@advanced-rest-client/arc-models').ARCModelStateDeleteEvent} ARCModelStateDeleteEvent */
-/** @typedef {import('@advanced-rest-client/arc-models').ARCClientCertificateDeletedEvent} ARCClientCertificateDeletedEvent */
-/** @typedef {import('@advanced-rest-client/arc-models').ARCClientCertificateUpdatedEvent} ARCClientCertificateUpdatedEvent */
+/** @typedef {import('@advanced-rest-client/arc-events').ARCModelStateDeleteEvent} ARCModelStateDeleteEvent */
+/** @typedef {import('@advanced-rest-client/arc-events').ARCClientCertificateDeletedEvent} ARCClientCertificateDeletedEvent */
+/** @typedef {import('@advanced-rest-client/arc-events').ARCClientCertificateUpdatedEvent} ARCClientCertificateUpdatedEvent */
 
 /**
  * @param {typeof LitElement} base

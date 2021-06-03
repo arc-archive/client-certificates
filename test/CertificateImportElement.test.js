@@ -7,7 +7,6 @@ import '../certificate-import.js';
 import { certFileHandler, keyFileHandler } from '../src/CertificateImportElement.js';
 
 /** @typedef {import('../src/CertificateImportElement').CertificateImportElement} CertificateImportElement */
-/** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.ARCClientCertificate} ARCClientCertificate */
 /** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.Certificate} Certificate */
 
 describe('CertificateImportElement', () => {

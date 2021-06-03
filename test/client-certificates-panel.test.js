@@ -1,15 +1,13 @@
 import { fixture, assert, html, nextFrame, aTimeout } from '@open-wc/testing';
-import * as sinon from 'sinon/pkg/sinon-esm.js';
+import sinon from 'sinon';
 import * as MockInteractions from '@polymer/iron-test-helpers/mock-interactions.js';
 import { DataGenerator } from '@advanced-rest-client/arc-data-generator/arc-data-generator.js';
 import '@advanced-rest-client/arc-models/client-certificate-model.js';
 import '../client-certificates-panel.js';
-import { ArcModelEvents, ArcModelEventTypes } from '@advanced-rest-client/arc-models';
-import { DataExportEventTypes, ImportEvents } from '@advanced-rest-client/arc-events';
+import { DataExportEventTypes, ImportEvents, ArcModelEvents, ArcModelEventTypes  } from '@advanced-rest-client/arc-events';
 import { doExportItems } from '../src/ClientCertificatesPanelElement.js';
 
 /** @typedef {import('../index').ClientCertificatesPanelElement} ClientCertificatesPanelElement */
-/** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.ARCClientCertificate} ARCClientCertificate */
 /** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.Certificate} Certificate */
 
 describe('ClientCertificatesPanelElement', () => {

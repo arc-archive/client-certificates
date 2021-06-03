@@ -1,17 +1,18 @@
 /* eslint-disable no-param-reassign */
 import { fixture, assert, html, nextFrame } from '@open-wc/testing';
 import sinon from 'sinon';
-import { DataGenerator } from '@advanced-rest-client/arc-data-generator/arc-data-generator.js';
+import { DataGenerator } from '@advanced-rest-client/arc-data-generator';
 import * as MockInteractions from '@polymer/iron-test-helpers/mock-interactions.js';
 import '@advanced-rest-client/arc-models/client-certificate-model.js';
-import { ArcModelEventTypes, ArcModelEvents } from '@advanced-rest-client/arc-models';
-import { ArcNavigationEventTypes, ImportEvents } from '@advanced-rest-client/arc-events';
+import { ArcNavigationEventTypes, ImportEvents, ArcModelEventTypes, ArcModelEvents } from '@advanced-rest-client/arc-events';
 import { METHOD_CC } from '../src/CcAuthorizationMethodElement.js';
 import '../cc-authorization-method.js';
 
 /** @typedef {import('../index').CcAuthorizationMethodElement} CcAuthorizationMethodElement */
+/** @typedef {import('@advanced-rest-client/arc-models').ARCCertificateIndex} ARCCertificateIndex */
 
 describe('CcAuthorizationMethodElement', () => {
+  const generator = new DataGenerator();
   /**
    * @returns {Promise<CcAuthorizationMethodElement>}
    */
@@ -115,11 +116,11 @@ describe('CcAuthorizationMethodElement', () => {
 
   describe('Data list', () => {
     before(async () => {
-      await DataGenerator.insertCertificatesData({});
+      await generator.insertCertificatesData({});
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.destroyClientCertificates();
     });
 
     let element = /** @type CcAuthorizationMethodElement */ (null);
@@ -164,8 +165,7 @@ describe('CcAuthorizationMethodElement', () => {
     let element = /** @type CcAuthorizationMethodElement */ (null);
     beforeEach(async () => {
       element = await basicFixture();
-      // @ts-ignore
-      element.items = DataGenerator.generateClientCertificates({ size: 5 });
+      element.items = generator.generateClientCertificates({ size: 5 });
     });
 
     it('resets items', () => {
@@ -196,11 +196,11 @@ describe('CcAuthorizationMethodElement', () => {
     let element = /** @type CcAuthorizationMethodElement */ (null);
 
     before(async () => {
-      await DataGenerator.insertCertificatesData({});
+      await generator.insertCertificatesData({});
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.destroyClientCertificates();
     });
 
     beforeEach(async () => {
@@ -221,15 +221,15 @@ describe('CcAuthorizationMethodElement', () => {
     });
   });
 
-  describe(`${ArcModelEventTypes.ClientCertificate.State.update} event handler`, () => {
+  describe(`The updated event handler`, () => {
     let element = /** @type CcAuthorizationMethodElement */ (null);
 
     before(async () => {
-      await DataGenerator.insertCertificatesData({});
+      await generator.insertCertificatesData({});
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.destroyClientCertificates();
     });
 
     beforeEach(async () => {
@@ -250,12 +250,10 @@ describe('CcAuthorizationMethodElement', () => {
 
     it('Adds new item to the list', () => {
       const before = element.items.length;
-      const item = DataGenerator.generateClientCertificate();
-      // @ts-ignore
+      const item = /** @type ARCCertificateIndex */ (generator.generateCertificateIndex());
       item._id = `${before + 1  }_`;
       const record = {
         item,
-        // @ts-ignore
         id: item._id,
         rev: 'test',
       };
@@ -266,11 +264,11 @@ describe('CcAuthorizationMethodElement', () => {
 
   describe('Selecting an item', () => {
     before(async () => {
-      await DataGenerator.insertCertificatesData({});
+      await generator.insertCertificatesData({});
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.destroyClientCertificates();
     });
 
     it('changes selection on item click', async () => {
@@ -318,11 +316,11 @@ describe('CcAuthorizationMethodElement', () => {
   describe('serialize()', () => {
     let element = /** @type CcAuthorizationMethodElement */ (null);
     before(async () => {
-      await DataGenerator.insertCertificatesData({});
+      await generator.insertCertificatesData({});
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.destroyClientCertificates();
     });
 
     beforeEach(async () => {

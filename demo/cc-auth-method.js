@@ -1,8 +1,7 @@
 import { html } from 'lit-element';
 import { DemoPage } from '@advanced-rest-client/arc-demo-helper';
 import { DataGenerator } from '@advanced-rest-client/arc-data-generator';
-import { ArcNavigationEventTypes, ImportEvents } from '@advanced-rest-client/arc-events';
-import { ArcModelEvents } from '@advanced-rest-client/arc-models';
+import { ArcNavigationEventTypes, ImportEvents, ArcModelEvents } from '@advanced-rest-client/arc-events';
 import '@advanced-rest-client/arc-demo-helper/arc-interactive-demo.js';
 import '@advanced-rest-client/arc-models/client-certificate-model.js';
 import '@anypoint-web-components/anypoint-button/anypoint-button.js';

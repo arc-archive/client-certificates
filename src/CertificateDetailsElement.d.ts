@@ -12,7 +12,7 @@ License for the specific language governing permissions and limitations under
 the License.
 */
 import { LitElement, CSSResult, TemplateResult } from 'lit-element';
-import { ARCClientCertificate } from '@advanced-rest-client/arc-types/src/models/ClientCertificate';
+import { ClientCertificate } from '@advanced-rest-client/arc-types';
 
 export declare const certIdValue: unique symbol;
 export declare const deleteHandler: unique symbol;
@@ -51,7 +51,7 @@ export declare class CertificateDetailsElement extends LitElement {
   /**
    * A certificate
    */
-  certificate: ARCClientCertificate;
+  certificate: ClientCertificate.ClientCertificate;
 
   constructor();
 
@@ -71,7 +71,7 @@ export declare class CertificateDetailsElement extends LitElement {
   /**
    * @returns The template for the dialog title
    */
-  [headerTemplate](certificate: ARCClientCertificate): TemplateResult|string;
+  [headerTemplate](certificate: ClientCertificate.ClientCertificate): TemplateResult|string;
 
   /**
    * 
@@ -84,12 +84,12 @@ export declare class CertificateDetailsElement extends LitElement {
   /**
    * @returns The template for the dialog actions
    */
-  [actionsTemplate](certificate: ARCClientCertificate): TemplateResult|string;
+  [actionsTemplate](certificate: ClientCertificate.ClientCertificate): TemplateResult|string;
 
    /**
    * @returns The template for the certificate details
    */
-  [detailsTemplate](certificate: ARCClientCertificate): TemplateResult|string;
+  [detailsTemplate](certificate: ClientCertificate.ClientCertificate): TemplateResult|string;
 
   [busyTemplate](): TemplateResult|string;
 }

@@ -27,7 +27,7 @@ anypoint-listbox anypoint-icon-item {
   display: none !important;
 }
 
-paper-progress {
+progress {
   width: 100%;
 }
 

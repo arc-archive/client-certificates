@@ -8,6 +8,10 @@ It contains the following modules:
 - `ClientCertificateConsumerMixin` a mixin with common functions to process Client Certificates
 - `client-certificates-panel` - the application screen that handles CC UIs and user logic
 
+[![Published on NPM](https://img.shields.io/npm/v/@advanced-rest-client/client-certificates.svg)](https://www.npmjs.com/package/@advanced-rest-client/client-certificates)
+
+[![tests](https://github.com/advanced-rest-client/client-certificates/actions/workflows/deployment.yml/badge.svg)](https://github.com/advanced-rest-client/client-certificates/actions/workflows/deployment.yml)
+
 ## Usage
 
 ### Installation

@@ -1,15 +1,16 @@
 /* eslint-disable no-param-reassign */
 import { fixture, assert, html } from '@open-wc/testing';
-import * as sinon from 'sinon/pkg/sinon-esm.js';
-import { DataGenerator } from '@advanced-rest-client/arc-data-generator/arc-data-generator.js';
+import sinon from 'sinon';
+import { DataGenerator } from '@advanced-rest-client/arc-data-generator';
 import '@advanced-rest-client/arc-models/client-certificate-model.js';
-import { ArcModelEvents, ArcModelEventTypes } from '@advanced-rest-client/arc-models';
 import './test-element.js';
-import { ImportEvents } from '@advanced-rest-client/arc-events';
+import { ImportEvents, ArcModelEvents, ArcModelEventTypes } from '@advanced-rest-client/arc-events';
 
 describe('ClientCertificatesConsumerMixin', () => {
+  const generator = new DataGenerator();
+
   async function basicFixture() {
-    return fixture(`<test-element></test-element>`);
+    return fixture(html`<test-element></test-element>`);
   }
 
   async function queryDataFixture() {
@@ -58,7 +59,7 @@ describe('ClientCertificatesConsumerMixin', () => {
     });
 
     it('is true when has items', () => {
-      element.items = DataGenerator.generateClientCertificates({ size: 5 });
+      element.items = generator.generateClientCertificates({ size: 5 });
       assert.isTrue(element.hasItems);
     });
   });
@@ -75,13 +76,13 @@ describe('ClientCertificatesConsumerMixin', () => {
     });
 
     it('is false when no items and loading', () => {
-      element.items = DataGenerator.generateClientCertificates({ size: 5 });
+      element.items = generator.generateClientCertificates({ size: 5 });
       element.loading = true;
       assert.isFalse(element.dataUnavailable);
     });
 
     it('is false when has items', () => {
-      element.items = DataGenerator.generateClientCertificates({ size: 5 });
+      element.items = generator.generateClientCertificates({ size: 5 });
       assert.isFalse(element.dataUnavailable);
     });
   });
@@ -91,7 +92,7 @@ describe('ClientCertificatesConsumerMixin', () => {
     beforeEach(async () => {
       element = await basicFixture();
       // @ts-ignore
-      element.items = DataGenerator.generateClientCertificates({ size: 5 });
+      element.items = generator.generateClientCertificates({ size: 5 });
     });
 
     it('resets items', () => {
@@ -121,13 +122,13 @@ describe('ClientCertificatesConsumerMixin', () => {
   describe(`${ArcModelEventTypes.ClientCertificate.State.delete} event handler`, () => {
     let element;
     before(async () => {
-      await DataGenerator.insertCertificatesData({
+      await generator.insertCertificatesData({
         size: 5,
       });
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.destroyClientCertificates();
     });
 
     beforeEach(async () => {
@@ -149,13 +150,13 @@ describe('ClientCertificatesConsumerMixin', () => {
   describe(`${ArcModelEventTypes.ClientCertificate.State.update} event handler`, () => {
     let element;
     before(async () => {
-      await DataGenerator.insertCertificatesData({
+      await generator.insertCertificatesData({
         size: 5,
       });
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.destroyClientCertificates();
     });
 
     beforeEach(async () => {
@@ -176,7 +177,7 @@ describe('ClientCertificatesConsumerMixin', () => {
     });
 
     it('Adds new item to the list', () => {
-      const item = DataGenerator.generateClientCertificate();
+      const item = generator.generateClientCertificate();
       // @ts-ignore
       item._id = '6_';
       const record = {
@@ -193,11 +194,11 @@ describe('ClientCertificatesConsumerMixin', () => {
 
   describe('Data list', () => {
     before(async () => {
-      await DataGenerator.insertCertificatesData({});
+      await generator.insertCertificatesData({});
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.destroyClientCertificates();
     });
 
     let element;

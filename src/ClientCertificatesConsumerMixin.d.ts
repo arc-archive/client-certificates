@@ -1,4 +1,5 @@
-import { ARCCertificateIndex, ARCClientCertificateDeletedEvent, ARCClientCertificateUpdatedEvent, ARCModelStateDeleteEvent } from '@advanced-rest-client/arc-models';
+import { ARCCertificateIndex } from '@advanced-rest-client/arc-models';
+import { ARCClientCertificateDeletedEvent, ARCClientCertificateUpdatedEvent, ARCModelStateDeleteEvent } from '@advanced-rest-client/arc-events';
 
 export declare const dbDestroyHandler: unique symbol;
 export declare const dataImportHandler: unique symbol;

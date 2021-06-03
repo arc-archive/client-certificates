@@ -13,14 +13,13 @@ License for the specific language governing permissions and limitations under
 the License.
 */
 import { LitElement, html } from 'lit-element';
-import { ArcModelEvents } from '@advanced-rest-client/arc-models';
-import { TelemetryEvents } from '@advanced-rest-client/arc-events';
+import { TelemetryEvents, ArcModelEvents } from '@advanced-rest-client/arc-events';
 import '@advanced-rest-client/date-time/date-time.js';
 import '@anypoint-web-components/anypoint-button/anypoint-button.js';
 import '@advanced-rest-client/arc-icons/arc-icon.js';
 import elementStyles from './styles/CertificateDetails.js';
 
-/** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.ARCClientCertificate} ARCClientCertificate */
+/** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.ClientCertificate} ClientCertificate */
 /** @typedef {import('lit-element').TemplateResult} TemplateResult */
 
 export const certIdValue = Symbol('certIdValue');
@@ -84,7 +83,7 @@ export class CertificateDetailsElement extends LitElement {
   constructor() {
     super();
     /**
-     * @type {ARCClientCertificate}
+     * @type {ClientCertificate}
      */
     this.certificate = undefined;
     this.compatibility = false;
@@ -135,7 +134,7 @@ export class CertificateDetailsElement extends LitElement {
   }
 
   /**
-   * @param {ARCClientCertificate} certificate 
+   * @param {ClientCertificate} certificate 
    * @returns {TemplateResult|string} The template for the dialog title
    */
   [headerTemplate](certificate) {
@@ -173,7 +172,7 @@ export class CertificateDetailsElement extends LitElement {
   }
 
   /**
-   * @param {ARCClientCertificate} certificate 
+   * @param {ClientCertificate} certificate 
    * @returns {TemplateResult|string} The template for the dialog actions
    */
   [actionsTemplate](certificate) {
@@ -195,7 +194,7 @@ export class CertificateDetailsElement extends LitElement {
   }
 
    /**
-   * @param {ARCClientCertificate} certificate 
+   * @param {ClientCertificate} certificate 
    * @returns {TemplateResult|string} The template for the certificate details
    */
   [detailsTemplate](certificate) {
@@ -232,6 +231,6 @@ export class CertificateDetailsElement extends LitElement {
     if (!this.querying) {
       return '';
     }
-    return html`<progress indeterminate></progress>`;
+    return html`<progress></progress>`;
   }
 }

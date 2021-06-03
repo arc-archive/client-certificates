@@ -12,7 +12,7 @@ License for the specific language governing permissions and limitations under
 the License.
 */
 import { CSSResult, LitElement, TemplateResult } from 'lit-element';
-import { ARCClientCertificate, Certificate } from '@advanced-rest-client/arc-types/src/models/ClientCertificate';
+import { ClientCertificate } from '@advanced-rest-client/arc-types';
 
 export declare const startScreenTemplate: unique symbol;
 export declare const headerTemplate: unique symbol;
@@ -161,7 +161,7 @@ export declare class CertificateImportElement extends LitElement {
 
   [importHandler](): void;
 
-  getConfig(): Promise<ARCClientCertificate>;
+  getConfig(): Promise<ClientCertificate.ClientCertificate>;
 
   /**
    * Reads file as ArrayBuffer

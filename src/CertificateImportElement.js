@@ -13,8 +13,7 @@ License for the specific language governing permissions and limitations under
 the License.
 */
 import { LitElement, html } from 'lit-element';
-import { ArcModelEvents } from '@advanced-rest-client/arc-models';
-import { TelemetryEvents } from '@advanced-rest-client/arc-events';
+import { TelemetryEvents, ArcModelEvents } from '@advanced-rest-client/arc-events';
 import '@advanced-rest-client/arc-icons/arc-icon.js';
 import '@anypoint-web-components/anypoint-button/anypoint-button.js';
 import '@anypoint-web-components/anypoint-button/anypoint-icon-button.js';
@@ -24,7 +23,7 @@ import '@anypoint-web-components/anypoint-switch/anypoint-switch.js';
 import elementStyles from './styles/CertificateImport.js';
 
 /** @typedef {import('lit-element').TemplateResult} TemplateResult */
-/** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.ARCClientCertificate} ARCClientCertificate */
+/** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.ClientCertificate} ClientCertificate */
 /** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.Certificate} Certificate */
 
 export const startScreenTemplate = Symbol('startScreenTemplate');
@@ -284,7 +283,7 @@ export class CertificateImportElement extends LitElement {
   }
 
   /**
-   * @returns {Promise<ARCClientCertificate>}
+   * @returns {Promise<ClientCertificate>}
    */
   async getConfig() {
     const forceBuffer = this.importType === 'p12';
@@ -296,7 +295,7 @@ export class CertificateImportElement extends LitElement {
       // can be an empty password
       cert.passphrase = this.certificatePassword || '';
     }
-    const result = /** @type ARCClientCertificate */ ({
+    const result = /** @type ClientCertificate */ ({
       cert,
       name: this.name || '',
       type: this.importType,
