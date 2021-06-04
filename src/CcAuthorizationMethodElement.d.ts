@@ -1,6 +1,6 @@
 import { ARCCertificateIndex } from '@advanced-rest-client/arc-models';
 import { CCAuthorization } from '@advanced-rest-client/arc-types/src/authorization/Authorization';
-import { AuthorizationMethod } from '@advanced-rest-client/authorization-method';
+import { AuthorizationMethodElement } from '@advanced-rest-client/authorization';
 import { CSSResult, TemplateResult } from 'lit-element';
 import { ClientCertificatesConsumerMixin } from './ClientCertificatesConsumerMixin';
 
@@ -14,7 +14,7 @@ export declare const importTemplate: unique symbol;
 export declare const selectedHandler: unique symbol;
 export declare const importHandler: unique symbol;
 
-export declare class CcAuthorizationMethodElement extends ClientCertificatesConsumerMixin(AuthorizationMethod) {
+export declare class CcAuthorizationMethodElement extends ClientCertificatesConsumerMixin(AuthorizationMethodElement) {
   static get styles(): CSSResult;
   /**
    * The id of selected certificate.

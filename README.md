@@ -22,7 +22,7 @@ npm install --save @advanced-rest-client/client-certificates
 
 ### cc-authorization-method
 
-A web component that extends the `@advanced-rest-client/authorization-method` element to allow to select a client certificate as an authorization method.
+A web component that extends the `@advanced-rest-client/authorization/authorization-method` element to allow to select a client certificate as an authorization method.
 
 Default storage interface is provided with `@advanced-rest-client/arc-models/client-certificate-model.js` [see implementation](https://github.com/advanced-rest-client/arc-models/blob/stage/src/ClientCertificateModel.js).
 
@@ -32,7 +32,7 @@ Default storage interface is provided with `@advanced-rest-client/arc-models/cli
 <html>
   <head>
     <script type="module">
-      import '@advanced-rest-client/authorization-method/cc-authorization-method.js';
+      import '@advanced-rest-client/authorization/cc-authorization-method.js';
       import '@advanced-rest-client/arc-models/client-certificate-model.js';
     </script>
   </head>
@@ -49,7 +49,7 @@ Default storage interface is provided with `@advanced-rest-client/arc-models/cli
 
 ```js
 import { LitElement, html } from 'lit-element';
-import '@advanced-rest-client/authorization-method/cc-authorization-method.js';
+import '@advanced-rest-client/authorization/cc-authorization-method.js';
 
 class SampleElement extends LitElement {
   render() {

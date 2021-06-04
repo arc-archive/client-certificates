@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { html } from 'lit-element';
-import { AuthorizationMethod } from '@advanced-rest-client/authorization-method/src/AuthorizationMethod.js';
-import { notifyChange } from '@advanced-rest-client/authorization-method/src/Utils.js';
+import { AuthorizationMethodElement } from '@advanced-rest-client/authorization';
+import { notifyChange } from '@advanced-rest-client/authorization/src/Utils.js';
 import { ArcNavigationEvents, TelemetryEvents } from '@advanced-rest-client/arc-events';
 import '@anypoint-web-components/anypoint-radio-button/anypoint-radio-button.js';
 import '@anypoint-web-components/anypoint-radio-button/anypoint-radio-group.js';
@@ -25,7 +25,7 @@ export const importTemplate = Symbol('importTemplate');
 export const selectedHandler = Symbol('selectedHandler');
 export const importHandler = Symbol('importHandler');
 
-export class CcAuthorizationMethodElement extends ClientCertificatesConsumerMixin(AuthorizationMethod) {
+export class CcAuthorizationMethodElement extends ClientCertificatesConsumerMixin(AuthorizationMethodElement) {
   static get styles() {
     return styles;
   }
