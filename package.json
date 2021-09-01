@@ -1,7 +1,7 @@
 {
   "name": "@advanced-rest-client/client-certificates",
   "description": "A library containing the logic and the UIs to support client certificates in the Advanced REST Client application.",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "license": "Apache-2.0",
   "main": "index.js",
   "module": "index.js",
@@ -26,41 +26,41 @@
     "email": "arc@mulesoft.com"
   },
   "dependencies": {
-    "@advanced-rest-client/arc-events": "^0.2.17",
+    "@advanced-rest-client/arc-events": "^0.2.20",
     "@advanced-rest-client/arc-icons": "^3.3.3",
-    "@advanced-rest-client/arc-models": "^5.2.1",
-    "@advanced-rest-client/arc-types": "^0.2.52",
-    "@advanced-rest-client/authorization": "^0.1.0",
+    "@advanced-rest-client/arc-models": "^5.2.3",
+    "@advanced-rest-client/arc-types": "^0.2.58",
+    "@advanced-rest-client/authorization": "^0.2.1",
     "@advanced-rest-client/bottom-sheet": "^3.2.3",
     "@advanced-rest-client/date-time": "^3.0.2",
-    "@anypoint-web-components/anypoint-button": "^1.2.1",
+    "@anypoint-web-components/anypoint-button": "^1.2.3",
     "@anypoint-web-components/anypoint-dialog": "^0.1.9",
-    "@anypoint-web-components/anypoint-input": "^0.2.25",
+    "@anypoint-web-components/anypoint-input": "^0.2.27",
     "@anypoint-web-components/anypoint-item": "^1.1.2",
     "@anypoint-web-components/anypoint-listbox": "^1.1.7",
     "@anypoint-web-components/anypoint-menu-button": "^0.1.5",
-    "@anypoint-web-components/anypoint-radio-button": "^0.1.7",
+    "@anypoint-web-components/anypoint-radio-button": "^0.1.9",
     "@anypoint-web-components/anypoint-switch": "^0.1.10",
     "@open-wc/dedupe-mixin": "^1.3.0",
     "lit-element": "^2.5.1",
     "lit-html": "^1.4.1"
   },
   "devDependencies": {
-    "@advanced-rest-client/arc-data-generator": "^3.2.2",
-    "@advanced-rest-client/arc-demo-helper": "^3.0.0",
-    "@anypoint-web-components/anypoint-checkbox": "^1.2.1",
+    "@advanced-rest-client/arc-data-generator": "^4.0.1",
+    "@advanced-rest-client/arc-demo-helper": "^3.0.2",
+    "@anypoint-web-components/anypoint-checkbox": "^1.2.2",
     "@open-wc/eslint-config": "^4.3.0",
     "@open-wc/testing": "^2.5.33",
     "@polymer/iron-test-helpers": "^3.0.1",
-    "@web/dev-server": "^0.1.17",
-    "@web/test-runner": "^0.13.5",
-    "@web/test-runner-playwright": "^0.8.6",
-    "eslint": "^7.27.0",
+    "@web/dev-server": "^0.1.22",
+    "@web/test-runner": "^0.13.17",
+    "@web/test-runner-playwright": "^0.8.8",
+    "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "husky": "^6.0.0",
-    "lint-staged": "^11.0.0",
-    "sinon": "^11.1.1",
-    "typescript": "^4.3.2",
+    "husky": "^7.0.2",
+    "lint-staged": "^11.1.2",
+    "sinon": "^11.1.2",
+    "typescript": "^4.4.2",
     "typescript-lit-html-plugin": "^0.9.0"
   },
   "scripts": {
@@ -106,5 +106,11 @@
     "*.js": [
       "eslint --fix"
     ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "always",
+    "printWidth": 240,
+    "trailingComma": "all"
   }
 }

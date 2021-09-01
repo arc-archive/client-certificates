@@ -34,14 +34,14 @@ interface ClientCertificatesConsumerMixin {
   /**
    * `true` if `items` is set and has cookies
    */
-  readonly hasItems: boolean;
+  get hasItems(): boolean;
 
   /**
    * A computed flag that determines that the query to the data store
    * has been performed and empty result was returned.
    * This can be true only if not in search.
    */
-  readonly dataUnavailable: boolean;
+  get dataUnavailable(): boolean;
 
   /**
    * The latest page token received from the store.

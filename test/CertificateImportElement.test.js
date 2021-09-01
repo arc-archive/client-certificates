@@ -1,7 +1,8 @@
-import { fixture, assert, html, nextFrame } from '@open-wc/testing';
+import { fixture, assert, html, nextFrame, oneEvent } from '@open-wc/testing';
 import sinon from 'sinon';
+import 'pouchdb/dist/pouchdb.js';
 import * as MockInteractions from '@polymer/iron-test-helpers/mock-interactions.js';
-import { DataGenerator } from '@advanced-rest-client/arc-data-generator/arc-data-generator.js';
+import { ArcMock } from '@advanced-rest-client/arc-data-generator';
 import '@advanced-rest-client/arc-models/client-certificate-model.js';
 import '../certificate-import.js';
 import { certFileHandler, keyFileHandler } from '../src/CertificateImportElement.js';
@@ -10,6 +11,11 @@ import { certFileHandler, keyFileHandler } from '../src/CertificateImportElement
 /** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.Certificate} Certificate */
 
 describe('CertificateImportElement', () => {
+  const generator = new ArcMock({
+    // eslint-disable-next-line no-undef
+    store: PouchDB,
+  });
+
   /**
    * @returns {File}
    */
@@ -58,12 +64,6 @@ describe('CertificateImportElement', () => {
     return /** @type CertificateImportElement */ (node.querySelector('certificate-import'));
   }
 
-  async function untilTransitionEnds(element) {
-    return new Promise((resolve) => {
-      element.addEventListener('transitionend', () => resolve());
-    })
-  }
-
   describe('pages rendering', () => {
     let element = /** @type CertificateImportElement */ (null);
     beforeEach(async () => {
@@ -78,7 +78,7 @@ describe('CertificateImportElement', () => {
     it('switches to import page when p12 button click', async () => {
       const button = element.shadowRoot.querySelector('.cert-type-option[data-type=p12]');
       MockInteractions.tap(button);
-      await untilTransitionEnds(element);
+      await oneEvent(button, 'transitionend');
       assert.equal(element.page, 1, 'page is switched');
       assert.equal(element.importType, 'p12', 'importType is set');
     });
@@ -86,7 +86,7 @@ describe('CertificateImportElement', () => {
     it('switches to import page when pem button click', async () => {
       const button = element.shadowRoot.querySelector('.cert-type-option[data-type=pem]');
       MockInteractions.tap(button);
-      await untilTransitionEnds(element);
+      await oneEvent(button, 'transitionend');
       assert.equal(element.page, 1, 'page is switched');
       assert.equal(element.importType, 'pem', 'importType is set');
     });
@@ -382,17 +382,17 @@ describe('CertificateImportElement', () => {
 
   describe('Import flow', () => {
     before(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     it('imports new certificate', async () => {
       const element = await modelFilesFixture('p12');
       await element.accept();
-      const items = await DataGenerator.getDatastoreClientCertificates();
+      const items = await generator.store.getDatastoreClientCertificates();
       const [index, data] = items;
       assert.lengthOf(index, 1, 'Has an index item');
       assert.lengthOf(data, 1, 'Has a data item');

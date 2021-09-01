@@ -1,6 +1,6 @@
 import { html } from 'lit-element';
 import { DemoPage } from '@advanced-rest-client/arc-demo-helper';
-import { DataGenerator } from '@advanced-rest-client/arc-data-generator';
+import { ArcMock } from '@advanced-rest-client/arc-data-generator';
 import { ArcNavigationEventTypes, ImportEvents, ArcModelEvents } from '@advanced-rest-client/arc-events';
 import '@advanced-rest-client/arc-demo-helper/arc-interactive-demo.js';
 import '@advanced-rest-client/arc-models/client-certificate-model.js';
@@ -8,6 +8,7 @@ import '@anypoint-web-components/anypoint-button/anypoint-button.js';
 import '@anypoint-web-components/anypoint-checkbox/anypoint-checkbox.js';
 import '@anypoint-web-components/anypoint-dialog/anypoint-dialog.js';
 import '@anypoint-web-components/anypoint-dialog/anypoint-dialog-scrollable.js';
+import 'pouchdb/dist/pouchdb.js';
 import '../certificate-import.js';
 import '../cc-authorization-method.js';
 
@@ -28,7 +29,10 @@ class ComponentDemo extends DemoPage {
     this.demoStates = ['Filled', 'Outlined', 'Anypoint'];
     this.demoState = 0;
     this.mainChangesCounter = 0;
-    this.generator = new DataGenerator();
+    this.generator = new ArcMock({
+      // eslint-disable-next-line no-undef
+      store: PouchDB,
+    });
     this.allowNone = false;
     this.allowImportButton = false;
 
@@ -55,7 +59,7 @@ class ComponentDemo extends DemoPage {
   }
 
   async generateData() {
-    await this.generator.insertCertificatesData();
+    await this.generator.store.insertCertificates();
     ImportEvents.dataImported(document.body);
   }
 

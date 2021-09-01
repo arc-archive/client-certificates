@@ -1,7 +1,8 @@
 import { fixture, assert, html, nextFrame, aTimeout } from '@open-wc/testing';
 import sinon from 'sinon';
+import 'pouchdb/dist/pouchdb.js';
 import * as MockInteractions from '@polymer/iron-test-helpers/mock-interactions.js';
-import { DataGenerator } from '@advanced-rest-client/arc-data-generator/arc-data-generator.js';
+import { ArcMock } from '@advanced-rest-client/arc-data-generator';
 import '@advanced-rest-client/arc-models/client-certificate-model.js';
 import '../client-certificates-panel.js';
 import { DataExportEventTypes, ImportEvents, ArcModelEvents, ArcModelEventTypes  } from '@advanced-rest-client/arc-events';
@@ -11,6 +12,11 @@ import { doExportItems } from '../src/ClientCertificatesPanelElement.js';
 /** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.Certificate} Certificate */
 
 describe('ClientCertificatesPanelElement', () => {
+  const generator = new ArcMock({
+    // eslint-disable-next-line no-undef
+    store: PouchDB,
+  });
+
   /**
    * @returns {Promise<ClientCertificatesPanelElement>}
    */
@@ -82,11 +88,11 @@ describe('ClientCertificatesPanelElement', () => {
 
   describe('Data list', () => {
     before(async () => {
-      await DataGenerator.insertCertificatesData({});
+      await generator.store.insertCertificates();
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     let element = /** @type ClientCertificatesPanelElement */ (null);
@@ -114,7 +120,7 @@ describe('ClientCertificatesPanelElement', () => {
     beforeEach(async () => {
       element = await basicFixture();
       // @ts-ignore
-      element.items = DataGenerator.generateClientCertificates({ size: 5 });
+      element.items = generator.certificates.clientCertificates(5);
     });
 
     it('resets items', () => {
@@ -144,13 +150,11 @@ describe('ClientCertificatesPanelElement', () => {
   describe(`${ArcModelEventTypes.ClientCertificate.State.delete} event handler`, () => {
     let element = /** @type ClientCertificatesPanelElement */ (null);
     before(async () => {
-      await DataGenerator.insertCertificatesData({
-        size: 5,
-      });
+      await generator.store.insertCertificates(5);
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     beforeEach(async () => {
@@ -172,13 +176,11 @@ describe('ClientCertificatesPanelElement', () => {
   describe(`${ArcModelEventTypes.ClientCertificate.State.update} event handler`, () => {
     let element = /** @type ClientCertificatesPanelElement */ (null);
     before(async () => {
-      await DataGenerator.insertCertificatesData({
-        size: 5,
-      });
+      await generator.store.insertCertificates(5);
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     beforeEach(async () => {
@@ -200,7 +202,7 @@ describe('ClientCertificatesPanelElement', () => {
     });
 
     it('Adds new item to the list', () => {
-      const item = DataGenerator.generateClientCertificate();
+      const item = generator.certificates.clientCertificate();
       // @ts-ignore
       item._id = '6_';
       const record = {
@@ -217,11 +219,11 @@ describe('ClientCertificatesPanelElement', () => {
 
   describe('Details rendering', () => {
     before(async () => {
-      await DataGenerator.insertCertificatesData({});
+      await generator.store.insertCertificates(5);
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     let element = /** @type ClientCertificatesPanelElement */ (null);
@@ -229,10 +231,10 @@ describe('ClientCertificatesPanelElement', () => {
       element = await queryDataFixture();
     });
 
-    it('opens detail dialog when detail button is clicked', () => {
+    it('opens detail dialog when detail button is clicked', async () => {
       const node = element.shadowRoot.querySelector('.list-item anypoint-button');
       MockInteractions.tap(node);
-
+      await nextFrame();
       assert.equal(element.openedDetailsId, element.items[0]._id, 'openedDetailsId is set');
       assert.isTrue(element.certDetailsOpened);
     });
@@ -248,11 +250,11 @@ describe('ClientCertificatesPanelElement', () => {
 
   describe('Export certificates flow', () => {
     before(async () => {
-      await DataGenerator.insertCertificatesData({});
+      await generator.store.insertCertificates(5);
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     let element = /** @type ClientCertificatesPanelElement */ (null);
@@ -296,7 +298,7 @@ describe('ClientCertificatesPanelElement', () => {
     let element = /** @type ClientCertificatesPanelElement */ (null);
     beforeEach(async () => {
       element = await basicFixture();
-      const items = DataGenerator.generateClientCertificates({ size: 5 });
+      const items = generator.certificates.clientCertificates(5);
       await untilAfterQuery(element, items);
     });
 
@@ -318,11 +320,11 @@ describe('ClientCertificatesPanelElement', () => {
 
   describe('All data delete', () => {
     before(async () => {
-      await DataGenerator.insertCertificatesData({});
+      await generator.store.insertCertificates(5);
     });
 
     after(async () => {
-      await DataGenerator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     let element = /** @type ClientCertificatesPanelElement */ (null);

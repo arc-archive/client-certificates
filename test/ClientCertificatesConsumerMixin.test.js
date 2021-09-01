@@ -1,13 +1,17 @@
 /* eslint-disable no-param-reassign */
 import { fixture, assert, html } from '@open-wc/testing';
 import sinon from 'sinon';
-import { DataGenerator } from '@advanced-rest-client/arc-data-generator';
+import 'pouchdb/dist/pouchdb.js';
+import { ArcMock } from '@advanced-rest-client/arc-data-generator';
 import '@advanced-rest-client/arc-models/client-certificate-model.js';
 import './test-element.js';
 import { ImportEvents, ArcModelEvents, ArcModelEventTypes } from '@advanced-rest-client/arc-events';
 
 describe('ClientCertificatesConsumerMixin', () => {
-  const generator = new DataGenerator();
+  const generator = new ArcMock({
+    // eslint-disable-next-line no-undef
+    store: PouchDB,
+  });
 
   async function basicFixture() {
     return fixture(html`<test-element></test-element>`);
@@ -59,7 +63,7 @@ describe('ClientCertificatesConsumerMixin', () => {
     });
 
     it('is true when has items', () => {
-      element.items = generator.generateClientCertificates({ size: 5 });
+      element.items = generator.certificates.clientCertificates(5);
       assert.isTrue(element.hasItems);
     });
   });
@@ -76,13 +80,13 @@ describe('ClientCertificatesConsumerMixin', () => {
     });
 
     it('is false when no items and loading', () => {
-      element.items = generator.generateClientCertificates({ size: 5 });
+      element.items = generator.certificates.clientCertificates(5);
       element.loading = true;
       assert.isFalse(element.dataUnavailable);
     });
 
     it('is false when has items', () => {
-      element.items = generator.generateClientCertificates({ size: 5 });
+      element.items = generator.certificates.clientCertificates(5);
       assert.isFalse(element.dataUnavailable);
     });
   });
@@ -92,7 +96,7 @@ describe('ClientCertificatesConsumerMixin', () => {
     beforeEach(async () => {
       element = await basicFixture();
       // @ts-ignore
-      element.items = generator.generateClientCertificates({ size: 5 });
+      element.items = generator.certificates.clientCertificates(5);
     });
 
     it('resets items', () => {
@@ -122,13 +126,11 @@ describe('ClientCertificatesConsumerMixin', () => {
   describe(`${ArcModelEventTypes.ClientCertificate.State.delete} event handler`, () => {
     let element;
     before(async () => {
-      await generator.insertCertificatesData({
-        size: 5,
-      });
+      await generator.store.insertCertificates(5);
     });
 
     after(async () => {
-      await generator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     beforeEach(async () => {
@@ -150,13 +152,11 @@ describe('ClientCertificatesConsumerMixin', () => {
   describe(`${ArcModelEventTypes.ClientCertificate.State.update} event handler`, () => {
     let element;
     before(async () => {
-      await generator.insertCertificatesData({
-        size: 5,
-      });
+      await generator.store.insertCertificates(5);
     });
 
     after(async () => {
-      await generator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     beforeEach(async () => {
@@ -177,7 +177,7 @@ describe('ClientCertificatesConsumerMixin', () => {
     });
 
     it('Adds new item to the list', () => {
-      const item = generator.generateClientCertificate();
+      const item = generator.certificates.clientCertificate();
       // @ts-ignore
       item._id = '6_';
       const record = {
@@ -186,7 +186,6 @@ describe('ClientCertificatesConsumerMixin', () => {
         id: item._id,
         rev: 'test',
       };
-      // @ts-ignore
       ArcModelEvents.ClientCertificate.State.update(document.body, record);
       assert.lengthOf(element.items, 6);
     });
@@ -194,11 +193,11 @@ describe('ClientCertificatesConsumerMixin', () => {
 
   describe('Data list', () => {
     before(async () => {
-      await generator.insertCertificatesData({});
+      await generator.store.insertCertificates();
     });
 
     after(async () => {
-      await generator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     let element;

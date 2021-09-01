@@ -26,7 +26,7 @@ import '@advanced-rest-client/arc-models/export-options.js';
 import '@advanced-rest-client/bottom-sheet/bottom-sheet.js';
 import styles from './styles/ClientCertificatesPanel.js';
 import { certificate } from './icons.js'
-import { ClientCertificatesConsumerMixin, handleException } from './ClientCertificatesConsumerMixin.js';
+import { certDeleteHandler, ClientCertificatesConsumerMixin, handleException } from './ClientCertificatesConsumerMixin.js';
 import '../certificate-import.js';
 import '../certificate-details.js';
 
@@ -35,6 +35,7 @@ import '../certificate-details.js';
 /** @typedef {import('@advanced-rest-client/arc-types').DataExport.ProviderOptions} ProviderOptions */
 /** @typedef {import('@advanced-rest-client/arc-types').DataExport.ExportOptions} ExportOptions */
 /** @typedef {import('@advanced-rest-client/arc-types').ClientCertificate.ARCCertificateIndex} ARCCertificateIndex */
+/** @typedef {import('@advanced-rest-client/arc-events').ARCClientCertificateDeletedEvent} ARCClientCertificateDeletedEvent */
 
 export const renderPage = Symbol('renderPage');
 export const headerTemplate = Symbol('headerTemplate');
@@ -114,6 +115,18 @@ export class ClientCertificatesPanelElement extends ClientCertificatesConsumerMi
     this.certDetailsOpened = false;
     this.openedDetailsId = undefined;
     this.errorMessage = undefined;
+  }
+
+  /**
+   * @param {ARCClientCertificateDeletedEvent} e 
+   */
+  [certDeleteHandler](e) {
+    const { id } = e;
+    if (id === this.openedDetailsId) {
+      this.openedDetailsId = undefined;
+      this.certDetailsOpened = false;
+    }
+    super[certDeleteHandler](e);
   }
 
   /**

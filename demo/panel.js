@@ -2,7 +2,7 @@
 import { html } from 'lit-html';
 import { DemoPage } from '@advanced-rest-client/arc-demo-helper';
 import { ImportEvents, ArcModelEvents } from '@advanced-rest-client/arc-events';
-import { DataGenerator } from '@advanced-rest-client/arc-data-generator';
+import { ArcMock } from '@advanced-rest-client/arc-data-generator';
 import listenEncoding from '@advanced-rest-client/arc-demo-helper/src/EncodingHelpers.js';
 import { ExportHandlerMixin } from '@advanced-rest-client/arc-demo-helper/src/ExportHandlerMixin.js';
 import '@anypoint-web-components/anypoint-button/anypoint-button.js';
@@ -30,7 +30,10 @@ class ComponentPage extends ExportHandlerMixin(DemoPage) {
     this.componentName = 'Client certificates panel';
     this.demoStates = ['Filles', 'Outlined', 'Anypoint'];
     this.listType = 'default';
-    this.generator = new DataGenerator();
+    this.generator = new ArcMock({
+      // eslint-disable-next-line no-undef
+      store: PouchDB,
+    });
     
     this.generateData = this.generateData.bind(this);
     this.deleteData = this.deleteData.bind(this);
@@ -39,7 +42,7 @@ class ComponentPage extends ExportHandlerMixin(DemoPage) {
   }
 
   async generateData() {
-    await this.generator.insertCertificatesData();
+    await this.generator.store.insertCertificates();
     ImportEvents.dataImported(document.body);
   }
 

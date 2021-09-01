@@ -1,6 +1,7 @@
 import { fixture, assert, html, nextFrame } from '@open-wc/testing';
 import sinon from 'sinon';
-import { DataGenerator } from '@advanced-rest-client/arc-data-generator';
+import 'pouchdb/dist/pouchdb.js';
+import { ArcMock } from '@advanced-rest-client/arc-data-generator';
 import * as MockInteractions from '@polymer/iron-test-helpers/mock-interactions.js';
 import '@advanced-rest-client/arc-models/client-certificate-model.js';
 import { ArcModelEventTypes } from '@advanced-rest-client/arc-events';
@@ -9,7 +10,10 @@ import '../certificate-details.js';
 /** @typedef {import('../index').CertificateDetailsElement} CertificateDetailsElement */
 
 describe('CertificateDetailsElement', () => {
-  const generator = new DataGenerator();
+  const generator = new ArcMock({
+    // eslint-disable-next-line no-undef
+    store: PouchDB,
+  });
 
   /**
    * @returns {Promise<CertificateDetailsElement>}
@@ -36,14 +40,12 @@ describe('CertificateDetailsElement', () => {
     let id;
 
     before(async () => {
-      const [insert] = await generator.insertCertificatesData({
-        size: 1
-      });
+      const [insert] = await generator.store.insertCertificates(1);
       id = insert._id;
     });
 
     after(async () => {
-      await generator.destroyClientCertificates();
+      await generator.store.destroyClientCertificates();
     });
 
     let element = /** @type CertificateDetailsElement */ (null);
@@ -81,14 +83,14 @@ describe('CertificateDetailsElement', () => {
 
   describe('Data rendering', () => {
     it('renders title', async () => {
-      const item = generator.generateClientCertificate();
+      const item = generator.certificates.clientCertificate();
       const element = await dataFixture(item);
       const header = element.shadowRoot.querySelector('h2');
       assert.dom.equal(header, `<h2>${item.name}</h2>`);
     });
 
     it('renders time', async () => {
-      const item = generator.generateClientCertificate();
+      const item = generator.certificates.clientCertificate();
       const element = await dataFixture(item);
       const dt = element.shadowRoot.querySelector('date-time');
       assert.ok(dt, 'date-time element is rendered');
@@ -96,7 +98,7 @@ describe('CertificateDetailsElement', () => {
     });
 
     it('renders type', async () => {
-      const item = generator.generateClientCertificate();
+      const item = generator.certificates.clientCertificate();
       const element = await dataFixture(item);
       const dt = element.shadowRoot.querySelector('.meta-row[data-type="type"] .value');
       assert.ok(dt, 'type is rendered');
@@ -104,7 +106,7 @@ describe('CertificateDetailsElement', () => {
     });
 
     it('renders files info for p12', async () => {
-      const item = generator.generateClientCertificate();
+      const item = generator.certificates.clientCertificate();
       item.type = 'p12';
       delete item.key;
       const element = await dataFixture(item);
@@ -114,7 +116,7 @@ describe('CertificateDetailsElement', () => {
     });
 
     it('renders files info for pem', async () => {
-      const item = generator.generateClientCertificate();
+      const item = generator.certificates.clientCertificate();
       item.type = 'pem';
       item.key = item.cert;
       const element = await dataFixture(item);
@@ -127,7 +129,7 @@ describe('CertificateDetailsElement', () => {
   describe('Delete action', () => {
     let element = /** @type CertificateDetailsElement */ (null);
     beforeEach(async () => {
-      const item = generator.generateClientCertificate();
+      const item = generator.certificates.clientCertificate();
       element = await dataFixture(item);
       element.queryCertInfo = async () => {};
       element.certId = 'test123';

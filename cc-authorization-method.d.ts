@@ -1,7 +1,7 @@
-import {CcAuthorizationMethodElement} from './src/CcAuthorizationMethodElement';
+import Element from './src/CcAuthorizationMethodElement';
 
 declare global {
   interface HTMLElementTagNameMap {
-    "cc-authorization-method": CcAuthorizationMethodElement;
+    "cc-authorization-method": Element;
   }
 }

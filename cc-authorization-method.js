@@ -1,3 +1,3 @@
-import { CcAuthorizationMethodElement } from './src/CcAuthorizationMethodElement.js';
+import Element from './src/CcAuthorizationMethodElement.js';
 
-window.customElements.define('cc-authorization-method', CcAuthorizationMethodElement);
+window.customElements.define('cc-authorization-method', Element);

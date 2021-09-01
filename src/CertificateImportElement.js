@@ -172,7 +172,7 @@ export class CertificateImportElement extends LitElement {
   [importTypeHandler](e) {
     const { propertyName, target } = e;
     if (propertyName !== undefined) {
-      // paper-ripple dispatches `transitionend` as a custom event
+      // material-ripple dispatches `transitionend` as a custom event
       // which has no propertyName on it.
       return;
     }
