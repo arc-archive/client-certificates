@@ -21,6 +21,7 @@ interface ClientCertificatesConsumerMixinConstructor {
  * Use `@advanced-rest-client/arc-models/client-certificate-model.js` as a
  * default store.
  * Also, see the model definition to learn about events API for certificates.
+ * @deprecated Use `@advanced-rest-client/app` instead.
  */
 interface ClientCertificatesConsumerMixin {
   /**

@@ -27,6 +27,7 @@ export declare const busyTemplate: unique symbol;
  *
  * Set `certId` property to certificate's identifier and the element
  * queries for the details and populates the view.
+ * @deprecated Use `@advanced-rest-client/app` instead.
  */
 export declare class CertificateDetailsElement extends LitElement {
   static get styles(): CSSResult;

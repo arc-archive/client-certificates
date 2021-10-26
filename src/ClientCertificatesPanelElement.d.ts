@@ -49,6 +49,7 @@ export declare const errorTemplate: unique symbol;
  * with `client-certificate-model` to store certificates in browser's internal
  * data store.
  * Consider this when 3rd party scripts runs on your page.
+ * @deprecated Use `@advanced-rest-client/app` instead.
  */
 export declare  class ClientCertificatesPanelElement extends ClientCertificatesConsumerMixin(LitElement) {
   static get styles(): CSSResult;

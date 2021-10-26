@@ -4,6 +4,9 @@ import { ClientCertificatesConsumerMixin } from './ClientCertificatesConsumerMix
 
 export declare const METHOD_CC: string;
 
+/**
+ * @deprecated Use `@advanced-rest-client/app` instead.
+ */
 export default class CcAuthorizationMethodElement extends ClientCertificatesConsumerMixin(AuthorizationMethodElement) {
   static get styles(): CSSResult;
   /**

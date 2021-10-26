@@ -43,6 +43,7 @@ export declare const errorTemplate: unique symbol;
  * A view to import a client certificate into the application.
  * 
  * @fires close When the parent should close the import dialog.
+ * @deprecated Use `@advanced-rest-client/app` instead.
  */
 export declare class CertificateImportElement extends LitElement {
   static get styles(): CSSResult;

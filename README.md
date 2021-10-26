@@ -1,4 +1,8 @@
-# Client certificates for ARC
+# Deprecated
+
+This component is deprecated. Use `@advanced-rest-client/app` instead.
+
+------
 
 A library containing the logic and the UIs to support client certificates in the Advanced REST Client application.
 
